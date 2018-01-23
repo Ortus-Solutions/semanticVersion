@@ -493,6 +493,14 @@ component singleton{
 
 		return comparatorSet;
 	}
+	
+	/**
+	* Determine if a string is a valid semantic version.
+	* @return boolean
+	*/
+	boolean function isValid( required string version ) {
+		return isNumeric( parseVersion( version ).major );
+	}
 
 	/**
 	* Parse the semantic version. If no minor found, then 0. If not revision found, then 0.
