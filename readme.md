@@ -11,3 +11,7 @@ This is a library that implements npm-style semantic versioning for CFML.
 var semver = wirebox.getInstance( 'semanticVersion@semver' );
 semver.satisfies( '1.0.0', '1.0.x' );
 ```
+
+## License
+
+This library is licensed under Apache 2.0.
