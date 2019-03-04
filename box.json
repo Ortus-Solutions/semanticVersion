@@ -17,5 +17,11 @@
         "postVersion":"package set location='Ortus-Solutions/semanticVersion#v`package version`'",
         "onRelease":"publish",
         "postPublish":"!git push --follow-tags"
+    },
+    "devDependencies":{
+        "testbox":"be"
+    },
+    "installPaths":{
+        "testbox":"testbox/"
     }
 }
