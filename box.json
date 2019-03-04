@@ -26,6 +26,8 @@
     },
     "ignore":[
         "**/.*",
-        "/tests/"
+        "/tests/",
+        "/server.json",
+        "**/.md"
     ]
 }
