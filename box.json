@@ -19,7 +19,7 @@
         "postPublish":"!git push --follow-tags"
     },
     "devDependencies":{
-        "testbox":"be"
+        "testbox": "^2.8.0+191"
     },
     "installPaths":{
         "testbox":"testbox/"
@@ -29,5 +29,6 @@
         "/tests/",
         "/server.json",
         "**/*.md"
-    ]
+    ],
+    "dependencies":{}
 }
