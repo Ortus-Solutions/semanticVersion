@@ -60,7 +60,7 @@ component singleton{
 		**/
 
 		local.current = parseVersion( arguments.current );
-		local.target 	= parseVersion( arguments.target );
+        local.target 	= parseVersion( arguments.target );
 
 		// Major check
 		if( target.major gt current.major ){
@@ -79,17 +79,11 @@ component singleton{
 			return true;
 		}
 
-		// A little hacky, but less code than what I had.
-		// Basically, an empty pre release ID needs to sort AFTER a non-empty one.
-		if( !len( target.preReleaseID ) ) { target.preReleaseID = 'zzzzzzzzzzzzzzzzzz'; }
-		if( !len( current.preReleaseID ) ) { current.preReleaseID = 'zzzzzzzzzzzzzzzzzz'; }
-
 		// pre-release Check
 		if( target.major eq current.major AND
 			target.minor eq current.minor AND
-			target.revision eq current.revision AND
-			// preReleaseID is either alphabetically higher, or target has no prereleaes id and current does.
-			lcase( target.preReleaseID ) gt lcase( current.preReleaseID ) ) {
+            target.revision eq current.revision AND
+            preReleaseCompare( target.preReleaseID, current.preReleaseID ) == 1 ) {
 			return true;
 		}
 
@@ -504,7 +498,7 @@ component singleton{
 		results.preReleaseID = find( "-", arguments.version ) ? listLast( arguments.version, "-" ) : '';
 		// Remove preReleaseID
 		arguments.version 	= reReplace( arguments.version, "\-([^\-]*).$", "" );
-		
+
 		// Get Revision
 		results.revision	= getToken( arguments.version, 3, "." );
 		if( results.revision == "" ){
@@ -512,7 +506,7 @@ component singleton{
 			results.revision = missingValuePlaceholder ?: 0;
 		} else if( results.revision.startsWith( '0' )  ) {
 			// If we found a revision, remove leading zeros
-			results.revision = val( results.revision );			
+			results.revision = val( results.revision );
 		}
 
 		// Get Minor + Major
@@ -522,16 +516,16 @@ component singleton{
 			results.minor = missingValuePlaceholder ?: 0;
 		} else if( results.minor.startsWith( '0' )  ) {
 			// If we found a minor, remove leading zeros
-			results.minor = val( results.minor );			
+			results.minor = val( results.minor );
 		}
-		
+
 		// Major is required.  Remove leading zeros with val()
 		results.major 		=  getToken( arguments.version, 1, "." );
 		if( results.major.startsWith( '0' )  ) {
 			// If we found a major, remove leading zeros
-			results.major = val( results.major );			
+			results.major = val( results.major );
 		}
-		
+
 		return results;
 	}
 
@@ -604,13 +598,64 @@ component singleton{
 
 		// if it's not a range, try and parse it as a single version, defaulting any missing pieces to "x" so "3" becomes "3.x.x".
 		arguments.version = getVersionAsString (parseVersion( clean( arguments.version ), 'x' ) );
-		
+
 		if( version contains '*' ) return false;
 		if( version contains 'x.' ) return false;
 		if( version contains '.x' ) return false;
 		if( includeBuildID && not version contains '+' ) return false;
-		
+
 		return len( trim( version ) ) > 0;
-	}
+    }
+
+    function preReleaseCompare( targetPreReleaseID, currentPreReleaseID ) {
+        // no prerelease is newer than a prerelease
+        if ( targetPreReleaseID == "" && currentPreReleaseID == "" ) {
+            return 0;
+        } else if ( targetPreReleaseID == "" && currentPreReleaseID != "" ) {
+            return 1;
+        } else if ( targetPreReleaseID != "" && currentPreReleaseID == "" ) {
+            return -1;
+        } else {
+            return preReleaseCompareSegment( targetPreReleaseID, currentPreReleaseID );
+        }
+    }
+
+    function preReleaseCompareSegment( targetPreReleaseID, currentPreReleaseID ) {
+        var targetSegment = listFirst( targetPreReleaseID, "." );
+        var currentSegment = listFirst( currentPreReleaseID, "." );
+
+        if ( targetSegment == "" && currentSegment == "" ) {
+            return 0;
+        }
+
+        // if the values are the same, move on to the next segment
+        if ( targetSegment == currentSegment ) {
+            return preReleaseCompareSegment(
+                listRest( targetPreReleaseID, "." ),
+                listRest( currentPreReleaseID, "." )
+            );
+        }
+
+        // return when one has more segments than the other
+        if ( targetSegment == "" && currentSegment != "" ) {
+            return -1;
+        } else if ( targetSegment != "" && currentSegment == "" ) {
+            return 1;
+        }
+
+        // letters trump numbers
+        if ( isNumeric( targetSegment ) && ! isNumeric( currentSegment ) ) {
+            return -1;
+        } else if ( ! isNumeric( targetSegment ) && isNumeric( currentSegment ) ) {
+            return 1;
+        }
+
+        // finally, do a numeric or alphabetic comparison
+        if ( isNumeric( targetSegment ) && isNumeric( currentSegment ) ) {
+            return targetSegment > currentSegment ? 1 : -1;
+        } else {
+            return compare( targetSegment, currentSegment );
+        }
+    }
 
 }
