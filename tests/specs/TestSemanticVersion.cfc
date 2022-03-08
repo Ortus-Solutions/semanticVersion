@@ -235,6 +235,7 @@ component name="TestPrint" extends="testbox.system.compat.framework.TestCase" {
 		assertFalse( semver.satisfies( '5.3.9-rc.1', '5.3.9-rc.2' ) );
 		assertTrue( semver.satisfies( '5.3.9-rc.1', '5-rc.2' ) );
 		assertTrue( semver.satisfies( '5.3.9', '5-rc.2' ) );
+		assertTrue( semver.satisfies( '5.4.0', '>5.3.9-rc.2' ) );
 
 		assertTrue( semver.satisfies( '1.2.3', '~1.2.3' ) );
 		assertTrue( semver.satisfies( '1.2.9', '~1.2.3' ) );
