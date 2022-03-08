@@ -228,6 +228,13 @@ component name="TestPrint" extends="testbox.system.compat.framework.TestCase" {
 
 		assertTrue( semver.satisfies( '1.2.3-alpha.7', '>1.2.3-alpha.3' ) );
 		assertFalse( semver.satisfies( '3.4.5-alpha.9', '>1.2.3-alpha.3' ) );
+		assertTrue( semver.satisfies( '5.3.9-SNAPSHOT', '5.3.9-SNAPSHOT' ) );
+		assertTrue( semver.satisfies( '5.3.9-SNAPSHOT', '5.x.x-SNAPSHOT' ) );
+		assertTrue( semver.satisfies( '5.3.9-SNAPSHOT', '5-SNAPSHOT' ) );
+		assertTrue( semver.satisfies( '5.3.9-SNAPSHOT', '5-alpha' ) );
+		assertFalse( semver.satisfies( '5.3.9-rc.1', '5.3.9-rc.2' ) );
+		assertTrue( semver.satisfies( '5.3.9-rc.1', '5-rc.2' ) );
+		assertTrue( semver.satisfies( '5.3.9', '5-rc.2' ) );
 
 		assertTrue( semver.satisfies( '1.2.3', '~1.2.3' ) );
 		assertTrue( semver.satisfies( '1.2.9', '~1.2.3' ) );
