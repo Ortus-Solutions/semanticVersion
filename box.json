@@ -17,7 +17,7 @@
         "postPublish":"!git push --follow-tags"
     },
     "devDependencies":{
-        "testbox":"^2.8.0+191"
+        "testbox":"^5.1.0+2"
     },
     "installPaths":{
         "testbox":"testbox/"

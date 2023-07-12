@@ -130,6 +130,9 @@ component name="TestPrint" extends="testbox.system.compat.framework.TestCase" {
 		assertEquals( semver.compare( '1.0.0-alpha.9', '1.0.0-alpha.9.beta' ), -1 );
 		assertEquals( semver.compare( '1.0.0-alpha.9.beta', '1.0.0-alpha.9.charlie' ), -1 );
 		assertEquals( semver.compare( '1.0.0-alpha.9.beta.5', '1.0.0-alpha.9.beta.20' ), -1 );
+
+		assertEquals( semver.compare( '6.0.0-beta-snapshot', '6.0.0-snapshot' ), -1 );
+		assertEquals( semver.compare( '6.0.0-snapshot', '6.0.0-beta-snapshot' ), 1 );
 	}
 
 	public void function testSatisfies() {
